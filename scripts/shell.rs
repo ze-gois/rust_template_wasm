@@ -2,10 +2,10 @@ use std::env;
 use std::process::{Command, exit};
 
 fn main() {
-    // Captura todos os argumentos passados ao binário, ignorando o primeiro (nome do binário)
+    // Pega todos os argumentos, ignorando o primeiro (nome do binário)
     let mut args = env::args().skip(1);
 
-    // O primeiro argumento agora deve ser o script a executar
+    // O primeiro argumento deve ser o script
     let script = match args.next() {
         Some(s) => s,
         None => {
@@ -17,13 +17,24 @@ fn main() {
     // Resto dos argumentos
     let script_args: Vec<String> = args.collect();
 
-    // Cria o comando para chamar o script via bash
-    let status = Command::new("bash")
-        .arg(&script)
-        .args(&script_args)
-        .status()
-        .expect("Failed to execute script");
+    // Detecta o sistema operacional para escolher o shell correto
+    #[cfg(target_os = "windows")]
+    let mut cmd = {
+        let mut c = Command::new("cmd");
+        c.arg("/C").arg(&script).args(&script_args);
+        c
+    };
 
-    // Repasse o código de saída do script
+    #[cfg(not(target_os = "windows"))]
+    let mut cmd = {
+        let mut c = Command::new("sh");
+        c.arg(&script).args(&script_args);
+        c
+    };
+
+    // Executa o script
+    let status = cmd.status().expect("Failed to execute script");
+
+    // Repasse do código de saída
     exit(status.code().unwrap_or(1));
 }

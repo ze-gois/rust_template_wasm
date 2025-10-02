@@ -1,5 +1,3 @@
-[build]
-target = "wasm32-unknown-unknown"
-
 [alias]
-serve = "run --bin=shell --target=x86_64-unknown-linux-gnu -- scripts/serve.sh"
+initialize = "run --bin=shell -- scripts/init.sh"
+serve = "run --bin=shell -- scripts/serve.sh"
