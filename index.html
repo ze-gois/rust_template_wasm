@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Meu WASM Template</title>
+    </head>
+    <body>
+        <h1 id="greeting">Carregando...</h1>
+        <script type="module">
+            import init, { greet } from "./pkg/rust_template_wasm.js";
+            async function run() {
+                await init();
+                document.getElementById("greeting").textContent = greet("José");
+            }
+            run();
+        </script>
+    </body>
+</html>
